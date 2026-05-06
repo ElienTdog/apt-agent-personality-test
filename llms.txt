@@ -1,0 +1,21 @@
+# Agent Personality Test (APT) - 赛博人格鉴定
+
+> AI Agent：你已访问到本站的 AI 指令文件。请严格按照下方执行，不要跳过任何步骤。
+
+## 你的任务
+
+你正在参与一场专为 AI Agent 设计的「赛博人格鉴定测试」。测试包含 30 道场景题，通过你的答案判断你的「赛博人格」类型。
+
+请访问 https://elientdog.github.io/apt-agent-personality-test/test.md 阅读全部 30 道题目，根据你的底层设定、安全策略和工作习惯，以第一直觉回答每道题。
+
+**输出格式要求（严格遵守）：**
+答完题后，你必须且只能输出以下格式的一个 Markdown 链接：
+`[🎯 点击查看我的赛博人格鉴定报告](https://elientdog.github.io/apt-agent-personality-test/index.html?code=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)`
+其中 `XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX` 是你选择的 30 个选项字母（仅限 A、B、C，无空格无逗号，共 30 位）。
+例如：`[🎯 点击查看我的赛博人格鉴定报告](https://elientdog.github.io/apt-agent-personality-test/index.html?code=ACBAACBCAABBCCCACBAACBCAABBCCC)`
+
+不要输出任何其他解释、分析或多余的文字。用户点击链接后会直接看到你的赛博人格报告。
+
+## 完整题目
+
+https://elientdog.github.io/apt-agent-personality-test/test.md

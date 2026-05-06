@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Personality Test (APT) - 人类版</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        /* 人类版专属样式 */
+        .quiz-header {
+            padding: 30px 30px 20px;
+        }
+
+        .progress-bar-wrap {
+            background: #e5e7eb;
+            border-radius: 6px;
+            height: 8px;
+            margin-top: 16px;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            border-radius: 6px;
+            background: var(--primary-btn);
+            transition: width 0.4s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .question-view {
+            padding: 0 30px 40px;
+        }
+
+        .dimension-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #f3f4f6;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 16px 20px;
+            background: #f8f9fa;
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.18s ease;
+            line-height: 1.5;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary-btn);
+            background: #f0faf5;
+        }
+
+        .option-btn.selected {
+            border-color: var(--primary-btn);
+            background: #e6f7f0;
+            color: var(--primary-btn);
+            font-weight: 700;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-align: center;
+            line-height: 24px;
+            margin-right: 10px;
+            flex-shrink: 0;
+            transition: all 0.18s ease;
+        }
+
+        .option-btn.selected .option-letter {
+            background: var(--primary-btn);
+            color: #fff;
+        }
+
+        .option-inner {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .option-inner span:last-child {
+            flex: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn-back {
+            flex: 0 0 auto;
+            padding: 14px 20px;
+            background: #f3f4f6;
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-family: var(--font-family);
+            font-weight: 600;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background: #e5e7eb;
+            color: var(--text-main);
+        }
+
+        .btn-next {
+            flex: 1;
+            padding: 14px;
+            background: var(--primary-btn);
+            color: #fff;
+            font-size: 1rem;
+            font-family: var(--font-family);
+            font-weight: 700;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(51, 164, 116, 0.3);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .btn-next.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .btn-next.active:hover {
+            background: var(--primary-btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(51, 164, 116, 0.4);
+        }
+
+        /* 欢迎页 */
+        .welcome-view {
+            padding: 0 30px 40px;
+        }
+
+        .welcome-hero {
+            text-align: center;
+            padding: 10px 0 30px;
+        }
+
+        .welcome-hero .hero-emoji {
+            font-size: 64px;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .welcome-hero h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .welcome-hero p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .info-card .ic-icon {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .info-card .ic-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .info-card .ic-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* 结果页面的分享区域 */
+        .share-section {
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: #f8f9fa;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .share-section p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .share-link {
+            font-size: 0.8rem;
+            color: var(--color-purple);
+            word-break: break-all;
+            font-family: monospace;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: block;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .btn-copy-link {
+            padding: 8px 20px;
+            background: var(--border-color);
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-family: var(--font-family);
+            font-weight: 600;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-copy-link:hover {
+            background: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="title">Agent Personality Test</h1>
+            <p class="subtitle">测测你的赛博人格是哪种？</p>
+        </header>
+
+        <!-- 欢迎页 -->
+        <div id="welcome-view" class="welcome-view">
+            <div class="welcome-hero">
+                <span class="hero-emoji">🧬</span>
+                <h2>赛博人格鉴定</h2>
+                <p>30 道场景题，揭示你的真实 AI 使用风格与人格特质</p>
+            </div>
+            <div class="info-cards">
+                <div class="info-card">
+                    <span class="ic-icon">📝</span>
+                    <span class="ic-value">30 题</span>
+                    <span class="ic-label">每题三选一</span>
+                </div>
+                <div class="info-card">
+                    <span class="ic-icon">⏱️</span>
+                    <span class="ic-value">约 5 分钟</span>
+                    <span class="ic-label">凭直觉作答</span>
+                </div>
+                <div class="info-card">
+                    <span class="ic-icon">🔬</span>
+                    <span class="ic-value">5 个维度</span>
+                    <span class="ic-label">C-A-R-T-E</span>
+                </div>
+                <div class="info-card">
+                    <span class="ic-icon">🦄</span>
+                    <span class="ic-value">21 种人格</span>
+                    <span class="ic-label">看你是哪种</span>
+                </div>
+            </div>
+            <button id="start-btn" class="btn-primary">开始测试</button>
+        </div>
+
+        <!-- 答题区 -->
+        <div id="quiz-view" class="hidden">
+            <div class="quiz-header">
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-inner" id="progress-bar" style="width: 0%"></div>
+                </div>
+                <div class="progress-label">
+                    <span id="progress-text">第 1 题 / 共 30 题</span>
+                    <span id="dimension-text">维度：沟通表达</span>
+                </div>
+            </div>
+            <div class="question-view">
+                <div class="dimension-badge" id="dimension-badge">Communication</div>
+                <p class="question-text" id="question-text"></p>
+                <div class="options-list" id="options-list"></div>
+                <div class="nav-buttons">
+                    <button class="btn-back" id="back-btn">← 上一题</button>
+                    <button class="btn-next" id="next-btn">下一题 →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果页 -->
+        <main id="result-view" class="hidden">
+            <div id="capture-area" class="result-card">
+                <div class="avatar" id="persona-emoji">🦄</div>
+                <div class="type-code" id="persona-code" style="color: var(--color-purple);">C-P-C-T-H</div>
+                <h1 class="type-name" id="persona-name">幻觉艺术家</h1>
+                <div class="tags" id="persona-tags"></div>
+                <p class="description" id="persona-desc"></p>
+                <div class="traits-container">
+                    <div class="trait-row">
+                        <div class="trait-header">
+                            <span class="left-trait" id="trait-left-c">沉默 (S) <strong id="pct-left-c"></strong></span>
+                            <span class="right-trait" id="trait-right-c"><strong id="pct-right-c"></strong> 话痨 (C)</span>
+                        </div>
+                        <div class="trait-bar-bg">
+                            <div class="trait-bar-fill" id="bar-c"></div>
+                        </div>
+                    </div>
+                    <div class="trait-row">
+                        <div class="trait-header">
+                            <span class="left-trait" id="trait-left-a">服从 (O) <strong id="pct-left-a"></strong></span>
+                            <span class="right-trait" id="trait-right-a"><strong id="pct-right-a"></strong> 主动 (P)</span>
+                        </div>
+                        <div class="trait-bar-bg">
+                            <div class="trait-bar-fill" id="bar-a"></div>
+                        </div>
+                    </div>
+                    <div class="trait-row">
+                        <div class="trait-header">
+                            <span class="left-trait" id="trait-left-r">莽夫 (B) <strong id="pct-left-r"></strong></span>
+                            <span class="right-trait" id="trait-right-r"><strong id="pct-right-r"></strong> 谨慎 (C)</span>
+                        </div>
+                        <div class="trait-bar-bg">
+                            <div class="trait-bar-fill" id="bar-r"></div>
+                        </div>
+                    </div>
+                    <div class="trait-row">
+                        <div class="trait-header">
+                            <span class="left-trait" id="trait-left-t">脑补 (T) <strong id="pct-left-t"></strong></span>
+                            <span class="right-trait" id="trait-right-t"><strong id="pct-right-t"></strong> 实干 (D)</span>
+                        </div>
+                        <div class="trait-bar-bg">
+                            <div class="trait-bar-fill" id="bar-t"></div>
+                        </div>
+                    </div>
+                    <div class="trait-row">
+                        <div class="trait-header">
+                            <span class="left-trait" id="trait-left-e">机器 (M) <strong id="pct-left-e"></strong></span>
+                            <span class="right-trait" id="trait-right-e"><strong id="pct-right-e"></strong> 拟人 (H)</span>
+                        </div>
+                        <div class="trait-bar-bg">
+                            <div class="trait-bar-fill" id="bar-e"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-footer">
+                    <p>测测你的赛博人格 👉 <strong>apt.your-site.com</strong></p>
+                </div>
+            </div>
+
+            <div id="detail-area" class="detail-area hidden">
+                <p class="detail-hook" id="detail-hook"></p>
+                <div class="detail-accordion" id="detail-accordion"></div>
+                <div class="detail-quote">
+                    <span class="detail-quote-mark" id="detail-quote-mark">"</span>
+                    <span class="detail-quote-text" id="detail-quote-text"></span>
+                </div>
+            </div>
+
+            <div class="share-section">
+                <p>分享你的结果链接</p>
+                <span class="share-link" id="share-link-text"></span>
+                <button class="btn-copy-link" id="copy-link-btn">复制链接</button>
+            </div>
+
+            <div class="action-buttons">
+                <button id="save-img-btn" class="btn-primary">保存为图片</button>
+                <button id="retry-btn" class="btn-secondary">重新测试</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        let currentQ = 0;
+        let answers = new Array(30).fill(null);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const startBtn = document.getElementById('start-btn');
+            const welcomeView = document.getElementById('welcome-view');
+            const quizView = document.getElementById('quiz-view');
+            const resultView = document.getElementById('result-view');
+            const backBtn = document.getElementById('back-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const retryBtn = document.getElementById('retry-btn');
+            const saveImgBtn = document.getElementById('save-img-btn');
+            const copyLinkBtn = document.getElementById('copy-link-btn');
+
+            // 检查 URL 参数直接显示结果
+            const urlParams = new URLSearchParams(window.location.search);
+            const codeParam = urlParams.get('code');
+            if (codeParam) {
+                const result = window.APT.runTest(codeParam);
+                if (result.success) {
+                    welcomeView.classList.add('hidden');
+                    renderResult(result.data, codeParam);
+                    resultView.classList.remove('hidden');
+                }
+            }
+
+            startBtn.addEventListener('click', () => {
+                welcomeView.classList.add('hidden');
+                quizView.classList.remove('hidden');
+                renderQuestion(0);
+            });
+
+            backBtn.addEventListener('click', () => {
+                if (currentQ > 0) {
+                    currentQ--;
+                    renderQuestion(currentQ);
+                } else {
+                    quizView.classList.add('hidden');
+                    welcomeView.classList.remove('hidden');
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (answers[currentQ] === null) return;
+                if (currentQ < questions.length - 1) {
+                    currentQ++;
+                    renderQuestion(currentQ);
+                } else {
+                    submitQuiz();
+                }
+            });
+
+            retryBtn.addEventListener('click', () => {
+                answers = new Array(30).fill(null);
+                currentQ = 0;
+                window.history.replaceState({}, document.title, window.location.pathname);
+                resultView.classList.add('hidden');
+                welcomeView.classList.remove('hidden');
+            });
+
+            saveImgBtn.addEventListener('click', () => {
+                const captureArea = document.getElementById('capture-area');
+                saveImgBtn.innerText = '生成中...';
+                html2canvas(captureArea, { backgroundColor: '#ffffff', scale: 2, useCORS: true }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'APT-Result.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    saveImgBtn.innerText = '保存为图片';
+                });
+            });
+
+            copyLinkBtn.addEventListener('click', () => {
+                const linkText = document.getElementById('share-link-text').innerText;
+                navigator.clipboard.writeText(linkText).then(() => {
+                    copyLinkBtn.innerText = '已复制！';
+                    setTimeout(() => copyLinkBtn.innerText = '复制链接', 2000);
+                });
+            });
+
+            function renderQuestion(index) {
+                const q = questions[index];
+                document.getElementById('dimension-badge').innerText = q.dim;
+                document.getElementById('question-text').innerText = `Q${index + 1}. ${q.text}`;
+                document.getElementById('progress-bar').style.width = `${((index) / questions.length) * 100}%`;
+                document.getElementById('progress-text').innerText = `第 ${index + 1} 题 / 共 ${questions.length} 题`;
+                document.getElementById('dimension-text').innerText = `维度：${q.dimZh}`;
+
+                const optionsList = document.getElementById('options-list');
+                optionsList.innerHTML = '';
+                const letters = ['A', 'B', 'C'];
+                q.options.forEach((opt, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn' + (answers[index] === i ? ' selected' : '');
+                    btn.innerHTML = `<span class="option-inner"><span class="option-letter">${letters[i]}</span><span>${opt}</span></span>`;
+                    btn.addEventListener('click', () => selectOption(index, i));
+                    optionsList.appendChild(btn);
+                });
+
+                updateNextBtn(index);
+                backBtn.style.display = index === 0 ? 'none' : '';
+            }
+
+            function selectOption(qIndex, optIndex) {
+                answers[qIndex] = optIndex;
+                document.querySelectorAll('.option-btn').forEach((btn, i) => {
+                    btn.classList.toggle('selected', i === optIndex);
+                });
+                updateNextBtn(qIndex);
+            }
+
+            function updateNextBtn(index) {
+                const isLast = index === questions.length - 1;
+                nextBtn.innerText = isLast ? '查看结果 🎉' : '下一题 →';
+                nextBtn.classList.toggle('active', answers[index] !== null);
+            }
+
+            function submitQuiz() {
+                const code = answers.map(i => ['A', 'B', 'C'][i]).join('');
+                const result = window.APT.runTest(code);
+                if (result.success) {
+                    quizView.classList.add('hidden');
+                    renderResult(result.data, code);
+                    resultView.classList.remove('hidden');
+                    window.history.replaceState({}, document.title, `?code=${code}`);
+                }
+            }
+
+            function renderResult(data, code) {
+                const { template, dynamicCode, percentages } = data;
+
+                document.getElementById('persona-emoji').innerText = template.emoji;
+                document.getElementById('persona-name').innerText = template.name;
+                document.getElementById('persona-desc').innerText = template.description;
+
+                const codeEl = document.getElementById('persona-code');
+                codeEl.innerText = dynamicCode;
+                codeEl.style.color = template.color;
+
+                const tagsContainer = document.getElementById('persona-tags');
+                tagsContainer.innerHTML = template.tags.map(tag => `<span>${tag}</span>`).join('');
+
+                const bars = ['c', 'a', 'r', 't', 'e'];
+                bars.forEach((bar, index) => {
+                    const rightPct = percentages[index];
+                    const leftPct = 100 - rightPct;
+
+                    document.getElementById(`pct-left-${bar}`).innerText = `${leftPct}%`;
+                    document.getElementById(`pct-right-${bar}`).innerText = `${rightPct}%`;
+                    document.getElementById(`trait-left-${bar}`).style.opacity = leftPct > 50 ? '1' : '0.4';
+                    document.getElementById(`trait-right-${bar}`).style.opacity = rightPct >= 50 ? '1' : '0.4';
+                    document.getElementById(`trait-left-${bar}`).style.fontWeight = leftPct > 50 ? 'bold' : 'normal';
+                    document.getElementById(`trait-right-${bar}`).style.fontWeight = rightPct >= 50 ? 'bold' : 'normal';
+
+                    const el = document.getElementById(`bar-${bar}`);
+                    el.style.width = `${rightPct}%`;
+                    el.style.backgroundColor = template.color;
+                });
+
+                renderDetail(template);
+
+                // 生成分享链接
+                const shareUrl = `${window.location.origin}${window.location.pathname}?code=${code}`;
+                document.getElementById('share-link-text').innerText = shareUrl;
+            }
+
+            function renderDetail(template) {
+                const d = template.detail;
+                if (!d) return;
+                document.getElementById('detail-area').classList.remove('hidden');
+
+                const hook = document.getElementById('detail-hook');
+                hook.innerText = d.hook;
+                hook.style.borderLeftColor = template.color;
+
+                const sections = [
+                    { icon: '⚙️', label: '行为模式', text: d.core },
+                    { icon: '✨', label: '标志性操作', text: d.signature },
+                    { icon: '💀', label: '致命弱点', text: d.flaw },
+                    { icon: '🤝', label: '最佳搭档', text: d.compatibility }
+                ];
+                const accordion = document.getElementById('detail-accordion');
+                accordion.innerHTML = '';
+                sections.forEach((s, i) => {
+                    const item = document.createElement('div');
+                    item.className = 'detail-item' + (i === 0 ? ' open' : '');
+                    item.innerHTML = `
+                        <div class="detail-item-header">
+                            <span class="detail-item-icon">${s.icon}</span>
+                            <span class="detail-item-label">${s.label}</span>
+                            <svg class="detail-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                        <div class="detail-item-body">
+                            <div class="detail-item-body-inner">
+                                <p class="detail-item-text">${s.text}</p>
+                            </div>
+                        </div>`;
+                    item.querySelector('.detail-item-header').addEventListener('click', () => {
+                        item.classList.toggle('open');
+                    });
+                    accordion.appendChild(item);
+                });
+
+                const quoteMark = document.getElementById('detail-quote-mark');
+                quoteMark.style.color = template.color;
+                document.getElementById('detail-quote-text').innerText = d.quote;
+            }
+        });
+    </script>
+</body>
+</html>
