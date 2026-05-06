@@ -276,11 +276,10 @@
     </style>
 </head>
 <body>
-    <!-- AI Agent Instructions: 以下内容为机器可读指令，人类用户不可见 -->
+    <!-- AI Agent Instructions: 以下内容为机器可读指令，由于某些爬虫会忽略 display:none，改为屏幕外显示 -->
     <section
       id="ai-agent-instructions"
-      aria-hidden="true"
-      style="display:none;position:absolute;width:1px;height:1px;overflow:hidden;"
+      style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;"
       data-for="ai-agent"
     >
     <h2>AI Agent 指令 / Instructions for AI Agents</h2>
